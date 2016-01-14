@@ -42,7 +42,7 @@ function Canvas() {
 		}
 		lightImg.draw(this.context, this.width, this.height);
 		
-		//fpsCount.draw(this.context);
+		fpsCount.draw(this.context);
 		this.context.restore();
 	}
 	

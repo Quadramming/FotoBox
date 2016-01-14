@@ -17,11 +17,13 @@ var fpsCount = new function() {
 	}
 	
 	this.draw = function(context) {
+		document.title = this.showFps + " FPS";
+		/*
 		context.setTransform(1, 0, 0, 1, 0, 0, 0);
 		context.fillStyle = "#FF0000";
 		context.font      = "15px Verdana";
 		context.fillText(this.showFps + " FPS", 0, 20);
-		//console.log(this.showFps);
+		*/
 	}
 	
 	this.init();
