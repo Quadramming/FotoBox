@@ -24,14 +24,14 @@ function Canvas() {
 	
 	this.drawAll = function() {
 		this.context.save();
-		this.context.beginPath();
 	
+		this.context.beginPath();
 		for ( var i in fotos ) {
 			fotos[i].addClip(this.context);
 		}
-		
 		if ( ! fullRedraw ) { 
-			//this.context.clip();
+			//this.context.rect(0, 0, 50, 50); // FPS
+			this.context.clip();
 		} else {
 			fullRedraw = false;
 		}
@@ -41,7 +41,8 @@ function Canvas() {
 			fotos[i].draw(this.context);
 		}
 		lightImg.draw(this.context, this.width, this.height);
-		fpsCount.draw(this.context);
+		
+		//fpsCount.draw(this.context);
 		this.context.restore();
 	}
 	

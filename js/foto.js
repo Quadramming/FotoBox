@@ -62,15 +62,24 @@ Foto.prototype.getVertexs = function() {
 	];
 }
 
-Foto.prototype.getClipVertexs = function() {
-	var ext  = this.shadowSize + 2;
+Foto.prototype.getClipRect = function() {
+	var ext  = this.shadowSize + 3;
 	var size = this.isThumb() ? this.sizeThumb : this.sizeFull;
-		return [
-			this.toWorld(-size.width()/2 - ext, -size.height()/2 - ext),
-			this.toWorld( size.width()/2 + ext, -size.height()/2 - ext),
-			this.toWorld( size.width()/2 + ext,  size.height()/2 + ext),
-			this.toWorld(-size.width()/2 - ext,  size.height()/2 + ext)
+	var obj = [
+			this.toWorldInt(-size.width()/2 - ext, -size.height()/2 - ext),
+			this.toWorldInt( size.width()/2 + ext, -size.height()/2 - ext),
+			this.toWorldInt( size.width()/2 + ext,  size.height()/2 + ext),
+			this.toWorldInt(-size.width()/2 - ext,  size.height()/2 + ext)
 		];
+		
+	var Xmax, Ymax, Xmin, Ymin;
+	for ( var i = 0; i < 4; i++ ) {
+		if ( obj[i].x > Xmax || i === 0 ) { Xmax = obj[i].x }
+		if ( obj[i].y > Ymax || i === 0 ) { Ymax = obj[i].y }
+		if ( obj[i].x < Xmin || i === 0 ) { Xmin = obj[i].x }
+		if ( obj[i].y < Ymin || i === 0 ) { Ymin = obj[i].y }
+	}
+	return { x: Xmin, y: Ymin, w: Xmax - Xmin, h: Ymax - Ymin};
 }
 
 Foto.prototype.getMatrix = function() {
@@ -82,6 +91,11 @@ Foto.prototype.getMatrix = function() {
 
 Foto.prototype.getInverseMatrix = function() {
 	return inverseMatrix(this.getMatrix());
+}
+
+Foto.prototype.toWorldInt = function(x, y) {
+	var xy = this.toWorld(x, y);
+	return {x: ceil(xy.x), y: ceil(xy.y)};
 }
 
 Foto.prototype.toWorld = function(x, y) {
@@ -113,7 +127,7 @@ Foto.prototype.isHit = function(x, y) {
 }
 
 Foto.prototype.process = function(delta, x, y) {
-	this.oldClipVertexs = this.getClipVertexs();
+	this.oldClipVertexs = this.getClipRect();
 	
 	if ( this.state.isEqual(FotoState.states.FREE) ) {
 		this.processMoveing(delta);
@@ -153,16 +167,10 @@ Foto.prototype.process = function(delta, x, y) {
 
 Foto.prototype.addClip = function(context) {
 	if ( this.isReady() && this.isNeedPaint() ) {
-		var vertexs = [this.getClipVertexs(), this.oldClipVertexs];
+		var vertexs = [this.getClipRect(), this.oldClipVertexs];
 		for ( var i in vertexs ) {
 			var v = vertexs[i];
-			
-			context.moveTo(v[0].x, v[0].y);
-			context.lineTo(v[1].x, v[1].y);
-			context.lineTo(v[2].x, v[2].y);
-			context.lineTo(v[3].x, v[3].y);
-			
-			context.closePath();
+			context.rect(v.x, v.y, v.w, v.h);
 		}
 		this.needPaint = false;
 	}
@@ -262,8 +270,8 @@ Foto.prototype.killImpactY  = function()  { this.velocity.clearY()              
 Foto.prototype.isThumb      = function()  { return !this.state.isEqual(FotoState.states.SHOWING)    && 
 												   !this.state.isEqual(FotoState.states.SHOWINGIN)  &&
 												   !this.state.isEqual(FotoState.states.SHOWINGOUT)  }
-Foto.prototype.isNeedPaint  = function()  { return !this.velocity.isClear() || 
-													this.isZooming() || 
+Foto.prototype.isNeedPaint  = function()  { return !this.velocity.isClear()                         || 
+													this.isZooming()                                || 
 													this.needPaint                                   }
 Foto.prototype.isReady      = function()  { return this.imgThumb.isReady() && this.img.isReady()     }
 

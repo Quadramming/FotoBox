@@ -56,6 +56,7 @@ function sin(a)     { return Math.sin(a);     }
 function cos(a)     { return Math.cos(a);     }
 function sqrt(a)    { return Math.sqrt(a);    }
 function floor(a)   { return Math.floor(a);   }
+function ceil(a)    { return Math.ceil(a);    }
 function round(a)   { return Math.round(a);   }
 function abs(a)     { return Math.abs(a);     }
 function pow(a, b)  { return Math.pow(a, b);  }

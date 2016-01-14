@@ -24,7 +24,7 @@ window.onload = function() {
 	setEvents();
 	canvas = new Canvas();
 
-	for ( var i = 0; i < 3; i++ ) {
+	for ( var i = 0; i < 100; i++ ) {
 		fotos.push( new Foto("./img/fotos/0.jpg", "./img/fotos/0Thumb.jpg", rand(0, canvas.getWidth()), rand(0, canvas.getHeight()), rand(0, PIx2), true));
 	}
 	if ( false /* you can try turn it on :) */ ) {
